@@ -8,7 +8,7 @@ let guides = [];
 marked.setOptions({ gfm: true });
 
 async function init() {
-  guides = await fetch('guides/index.json').then(r => r.json());
+  guides = await fetch('guides/index.json', { cache: 'no-cache' }).then(r => r.json());
   listEl.innerHTML = guides
     .map(g => `<li><a href="#/${g.slug}" data-slug="${g.slug}">${g.title}</a></li>`)
     .join('');
@@ -24,7 +24,7 @@ async function route() {
   const guide = guides.find(g => g.slug === slug);
   if (!guide) return renderHome();
 
-  const res = await fetch(`guides/${guide.file}`);
+  const res = await fetch(`guides/${guide.file}`, { cache: 'no-cache' });
   if (!res.ok) {
     contentEl.innerHTML = `<p class="muted">Could not load ${guide.file}.</p>`;
     return;
