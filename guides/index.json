@@ -4,5 +4,11 @@
     "title": "Getting Started",
     "file": "getting-started.md",
     "description": "How these guides are organised and how to follow them."
+  },
+  {
+    "slug": "issue-2087-before",
+    "title": "#2087 Notification Preferences — Before",
+    "file": "issue-2087-before.md",
+    "description": "Click-by-click UI test of how notifications behave today, before practice-level preferences ship."
   }
 ]
