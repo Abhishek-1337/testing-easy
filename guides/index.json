@@ -7,13 +7,13 @@
   },
   {
     "slug": "issue-2087-before",
-    "title": "#2087 Notification Preferences — Before",
+    "title": "Issue #2087",
     "file": "issue-2087-before.md",
     "description": "Click-by-click UI test of how notifications behave today, before practice-level preferences ship."
   },
   {
     "slug": "issue-1216-before",
-    "title": "#1216 Invisalign Not Authorized — Before",
+    "title": "Issue #1216",
     "file": "issue-1216-before.md",
     "description": "Click-by-click UI test of the dead-end \"try again\" error when the Providing Doctor never connected Invisalign."
   }
