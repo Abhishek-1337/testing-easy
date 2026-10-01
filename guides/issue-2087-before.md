@@ -5,11 +5,13 @@ Steps to run on your local app **before** the change, on `development` with the 
 > Row names are the exact labels from the preferences catalog. Menu and button names come from the Angular templates and haven't been clicked through yet, so expect small wording differences.
 
 ## Two things that will fool you
+<!-- Two setup mistakes that make every test look broken. -->
 
 - If the **Service Bus emulator isn't running**, *no* test creates any task. Everything will look broken in the same way.
 - For Tests 2–4, **don't use a patient whose Providing Doctor and Monitoring Doctor are the same person**. That case gets no task today, and #2087 doesn't change it (#2109 does).
 
 ## Setup (once, as SuperAdmin)
+<!-- Create the doctors, staff, practices and patients the tests use. -->
 
 1. Log in as **SuperAdmin**.
 2. Go to **Practices**, create or pick **Practice A**, and open its **Team** tab.
@@ -28,6 +30,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 6. Keep the `dotnet run` backend console visible; some results only show up there.
 
 ## Test 1: Preferences are per user today
+<!-- Each user has their own notification switches; practices have none. -->
 
 1. Log in as **D1**. Click your avatar → **Profile** → **Preferences** tab.
 2. **Look:** the header "Notification Preferences", with **Email** and **App** switches on each row. This is D1's own copy.
@@ -39,6 +42,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 8. **Look:** you only see Video Selections, Monitoring Protocols and Calendar Settings. There are no notification settings at practice level.
 
 ## Test 2: A deactivated staff account still counts as staff
+<!-- Deactivating the only staff member doesn't pass the task to the doctor. -->
 
 1. As **SuperAdmin**, go to **Users** (sidebar) → **Active** tab → click **S1**.
 2. Click the **Archive** icon (top of the page) → **Yes**. Despite the label, this deactivates S1.
@@ -50,6 +54,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 7. Afterwards, go back to **Users → Suspended → S1 → Restore** to reactivate S1.
 
 ## Test 3: A staffless practice already falls back to the Providing Doctor (control)
+<!-- With no staff, the doctor gets the task, but in-app only. -->
 
 1. As SuperAdmin, open **P2** (Practice B, no staff) → **Schedule Appointment** → **"An office team member will schedule it"** → **Submit**.
 2. Log in as **D1** → **Tasks**.
@@ -59,6 +64,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 > **After #2087:** D1 should get it in-app **and** by email.
 
 ## Test 4: The Providing Doctor can't opt into appointment tasks at a staffed practice
+<!-- Turning the switch on doesn't give the doctor the task. -->
 
 1. Make sure S1 is **active** (restore it if you did Test 2).
 2. Log in as **D1** → **Profile → Preferences** → row **"Appointment requested"**. Make sure **App** is on and click **Save**.
@@ -69,6 +75,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 > **After #2087:** turning on *Appointments → PD* for the practice should give D1 the task alongside S1.
 
 ## Test 5: Staff get appointment tasks in-app only
+<!-- Staff get the task but no email. -->
 
 1. From Test 4, S1's task has already been created.
 2. **Look in the backend console:** no email is sent to S1 for it.
@@ -77,6 +84,7 @@ Steps to run on your local app **before** the change, on `development` with the 
 > **After #2087:** S1 should also get an email.
 
 ## Test 6 (optional): A switch that's off stops the task from being created at all
+<!-- Muting a notification skips creating the task entirely. -->
 
 1. Log in as **D1** → **Profile → Preferences** → switch **App off** on **"Simulation ready for approval (PD)"** → **Save**.
 2. As SuperAdmin, open P1's case → case review → **Bypass Simulation** → confirm.
@@ -90,6 +98,7 @@ User … has muted definition simulation.ready.pd-notified; skipping task creati
 Only D1 is muted; any other doctor still gets theirs.
 
 ## Record your results
+<!-- What to write down so you can compare after the fix. -->
 
 For each test, write down:
 

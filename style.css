@@ -52,6 +52,7 @@ body {
   position: relative; background: var(--code-bg); border-radius: 8px;
   padding: 1rem 1.1rem; overflow-x: auto;
 }
+.content pre code { color: #e6edf3; }
 .content pre code.hljs { padding: 0; background: transparent; }
 .copy-btn {
   position: absolute; top: .5rem; right: .5rem;
@@ -66,6 +67,17 @@ body {
 .content blockquote p { margin: 0; }
 .content table { border-collapse: collapse; width: 100%; }
 .content th, .content td { border: 1px solid var(--border); padding: .45rem .7rem; text-align: left; }
+.toc {
+  margin: 1.75rem 0 .5rem; padding: 1rem 1.25rem;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+}
+.toc-title { margin: 0 0 .5rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { padding: .45rem 0; border-top: 1px solid var(--border); line-height: 1.4; }
+.toc li:first-child { border-top: 0; }
+.content .toc a { display: block; font-weight: 600; text-decoration: none; }
+.content .toc a:hover { text-decoration: underline; }
+.toc span { display: block; margin-top: .1rem; color: var(--muted); font-size: .88rem; }
 .muted { color: var(--muted); }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
 .card {

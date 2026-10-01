@@ -7,6 +7,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 > The labels come from the Angular templates and seed data and haven't been clicked through yet, so expect small wording differences.
 
 ## Things that will fool you
+<!-- Setup gaps and log noise that look like the bug but aren't. -->
 
 - **The toast only fires when you click a Patient Type card.** Reopening the workflow resumes silently (that's Test 3). If you expect a toast and see none, click **Adult** again.
 - **Don't connect Invisalign for Dr A.** Connecting (**Profile** → **Integrations** → **Aligners** → **Connect**) would need a real Align account and the staging OAuth relay. If a working connection somehow existed, the bug wouldn't reproduce at all.
@@ -15,6 +16,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 - **Ignore `Failed to sync patient images for patient …` in the console.** It's a side effect of the same missing connection, not a separate failure.
 
 ## Setup (once, as SuperAdmin)
+<!-- Create the practice, doctor, staff and patient, and upload records. -->
 
 1. Log in as `administrator@localhost` / `Administrator1!`.
 2. **Practices** → **New Practice**. Create practice **P-Test**.
@@ -31,6 +33,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 9. Keep the `dotnet run` console visible: the backend log is half the evidence.
 
 ## Test 1: A delegated user gets a dead-end "try again" on Treatment Options
+<!-- SuperAdmin sees a vague "try again" toast that never goes away. -->
 
 1. Logged in as SuperAdmin (who is not P1's Providing Doctor), open P1. Use the **Workflow** toggle in the top bar, then click **Prescription** in the sidebar.
 2. Under **01 Patient Type**, click **Adult**.
@@ -41,6 +44,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 > **After #1216:** the toast should read **Providing Doctor Not Authorized** / "Dr. Tester is not authorized with Invisalign. Please have them authorize before submitting the prescription."
 
 ## Test 2: The same failure as Staff
+<!-- Staff hit the same unhelpful toast. -->
 
 1. **Users** → S1 Staff → **Log in as this user**.
 2. **Patients** → P1 → **Workflow** → **Prescription** → **Adult**.
@@ -50,6 +54,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 > **After #1216:** the toast should name Dr. Tester, exactly as in Test 1.
 
 ## Test 3: Reopening a saved draft shows no toast at all
+<!-- Coming back to the prescription shows an empty page and no message. -->
 
 1. As SuperAdmin, after Test 1, go to another patient (or back to the patient list), then open P1 → **Workflow** → **Prescription** again.
 2. **Look:** it resumes on **02 Treatment Options** with "No treatment options available for this patient type." and **no toast at all**. The page just sits empty.
@@ -57,6 +62,7 @@ No Invisalign account is needed: the bug appears whenever the Providing Doctor n
 > **After #1216:** a toast should appear here too: **Providing Doctor Not Authorized** with Dr. Tester's name.
 
 ## Test 4: The backend console hides the real cause
+<!-- The server returns a generic 500 instead of naming the missing connection. -->
 
 1. During Test 1 or 2, look at the `dotnet run` console.
 2. **Look:** there's an error `Failed to get eligible products for patient <id>`, whose stack includes:
@@ -80,6 +86,7 @@ GET …/eligible-products?treatmentWorkflow=ADULT&externalType=Invisalign
 > **After #1216:** the same request should return **400** with `"error":"providing_doctor_not_authorized"`, and the console should log `Delegation refresh failed for PD … returning structured 400`.
 
 ## Test 5 (control): The Providing Doctor opening their own patient
+<!-- The doctor's own failure, which must not show the new message. -->
 
 1. **Users** → Dr A Tester → **Log in as this user**.
 2. **Patients** → P1 → **Workflow** → **Prescription** → **Adult**.
@@ -89,6 +96,7 @@ GET …/eligible-products?treatmentWorkflow=ADULT&externalType=Invisalign
 > **After #1216:** this case still fails, but the toast detail should show the server's own reason rather than "Please try again" (exact wording not verified). It must **not** say "Providing Doctor Not Authorized".
 
 ## Record your results
+<!-- What to write down so you can compare after the fix. -->
 
 For each test, write down:
 

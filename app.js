@@ -39,17 +39,20 @@ async function route() {
     contentEl.innerHTML = marked.parse(await res.text());
     document.title = `${guide.title} — Testing Easy`;
     currentSlug = slug;
+    const sections = buildSections(slug);
+    renderToc(sections, slug);
+    renderSections(sections, slug);
     enhanceCode();
-    renderSections(buildSections(slug), slug);
   }
 
   const target = section && document.getElementById(section);
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (target) target.scrollIntoView({ block: 'start' });
   else window.scrollTo(0, 0);
   setActiveSection(section);
 }
 
 // Give every h2 a stable id and return them as sidebar entries.
+// An HTML comment right under the heading (<!-- ... -->) is its summary.
 function buildSections(slug) {
   const used = new Set();
   return [...contentEl.querySelectorAll('h2')].map(h => {
@@ -57,8 +60,31 @@ function buildSections(slug) {
     for (let n = 2; used.has(id); n++) id = id.replace(/-\d+$/, '') + `-${n}`;
     used.add(id);
     h.id = id;
-    return { id, title: h.textContent, el: h };
+    return { id, title: h.textContent, summary: summaryOf(h), el: h };
   });
+}
+
+function summaryOf(heading) {
+  let node = heading.nextSibling;
+  while (node && node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) node = node.nextSibling;
+  return node && node.nodeType === Node.COMMENT_NODE ? node.textContent.trim() : '';
+}
+
+// "On this page" list placed above the first section.
+function renderToc(sections, slug) {
+  if (sections.length < 2) return;
+  const nav = document.createElement('nav');
+  nav.className = 'toc';
+  nav.innerHTML = `
+    <p class="toc-title">On this page</p>
+    <ol>
+      ${sections.map(s => `
+        <li>
+          <a href="#/${slug}/${s.id}">${s.title}</a>
+          ${s.summary ? `<span>${s.summary}</span>` : ''}
+        </li>`).join('')}
+    </ol>`;
+  sections[0].el.before(nav);
 }
 
 function renderSections(sections, slug) {
@@ -101,7 +127,7 @@ function renderHome() {
 
 function enhanceCode() {
   contentEl.querySelectorAll('pre code').forEach(block => {
-    hljs.highlightElement(block);
+    if (window.hljs) hljs.highlightElement(block);
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.textContent = 'Copy';

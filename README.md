@@ -9,7 +9,12 @@ Static site of step-by-step testing integration guides, hosted on GitHub Pages.
    ```json
    { "slug": "<slug>", "title": "<Title>", "file": "<slug>.md", "description": "<one line>" }
    ```
-3. Commit and push — GitHub Pages redeploys automatically.
+3. Optionally put a one-line summary under each `##` heading as an HTML comment. It shows in the guide's "On this page" box and is hidden in the guide itself:
+   ```markdown
+   ## Test 1: Preferences are per user today
+   <!-- Each user has their own notification switches; practices have none. -->
+   ```
+4. Commit and push — GitHub Pages redeploys automatically.
 
 ## Running locally
 
